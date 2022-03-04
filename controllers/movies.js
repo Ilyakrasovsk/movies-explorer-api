@@ -4,7 +4,7 @@ const Forbidden = require('../errors/forbidden-error');
 const Movie = require('../models/movie');
 
 module.exports.getMovies = (req, res, next) => Movie.find({})
-  .then((movies) => res.status(200).send(movies))
+  .then((movies) => res.send(movies))
   .catch(next);
 
 module.exports.createMovies = (req, res, next) => {
@@ -35,11 +35,12 @@ module.exports.createMovies = (req, res, next) => {
     nameRU,
     nameEN,
   })
-    .then((movie) => res.status(200).send(movie))
+    .then((movie) => res.send(movie))
     .catch((err) => {
       if (err.name === 'ValidationError') {
         throw new ValidationError('Переданы некорректные данные при создании карточки фильма');
       }
+      throw err;
     })
     .catch(next);
 };
@@ -53,9 +54,15 @@ module.exports.deleteMovie = (req, res, next) => {
     .then((movie) => {
       if (movie.owner.toString() === req.user._id) {
         return Movie.findByIdAndRemove(movieId)
-          .then(() => res.status(200).send(movie));
+          .then(() => res.send(movie));
       }
       throw new Forbidden('Вы пытаетесь удалить чужую карточку');
+    })
+    .catch((err) => {
+      if (err.name === 'CastError') {
+        throw new ValidationError('Переданы некорректные данные');
+      }
+      throw err;
     })
     .catch(next);
 };

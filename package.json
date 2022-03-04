@@ -1,7 +1,7 @@
 {
   "name": "movies-explorer-api",
   "version": "1.0.0",
-  "description": "",
+  "description": "movies-explorer-api",
   "main": "app.js",
   "scripts": {
     "start": "node app.js",

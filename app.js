@@ -4,29 +4,20 @@ const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const { errors } = require('celebrate');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
-const auth = require('./middlewares/auth');
 const NotFoundError = require('./errors/not-found-error');
 const errorHandler = require('./middlewares/errorHadler');
-const userRouter = require('./routes/users');
-const moviesRouter = require('./routes/movies');
-const { createUser, login } = require('./controllers/users');
-const { loginValidation, userValidation } = require('./middlewares/validation');
+const router = require('./routes/index');
+const DB_ADDRES = require('./utils/config');
 
 const app = express();
-const { PORT = 3000 } = process.env;
+const { PORT = 3000, DB_URL, NODE_ENV } = process.env;
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
 app.use(requestLogger);
 
-app.post('/signup', userValidation, createUser);
-app.post('/signin', loginValidation, login);
-
-app.use(auth);
-
-app.use('/users', userRouter);
-app.use('/movies', moviesRouter);
+app.use(router);
 
 app.use('*', () => {
   throw new NotFoundError('Запрашиваемый ресурс не найден');
@@ -36,7 +27,7 @@ app.use(errorLogger);
 app.use(errors());
 app.use(errorHandler);
 
-mongoose.connect('mongodb://localhost:27017/bitfilmsbd', () => {
+mongoose.connect(NODE_ENV === 'production' ? DB_URL : DB_ADDRES, () => {
   console.log('Подключение успешно');
 });
 

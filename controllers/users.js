@@ -31,10 +31,10 @@ module.exports.getAnyUser = (req, res, next) => User.findById(req.user._id)
   .orFail(() => {
     throw new NotFoundError('Пользователь не найден');
   })
-  .then((user) => res.status(200).send({ user }))
+  .then((user) => res.send({ user }))
   .catch((err) => {
-    if (err.name === 'CastError') {
-      throw new ValidationError('Переданы некорректные данные');
+    if (err.name === 'NotFoundError') {
+      throw new NotFoundError('Пользователь не найден');
     } else {
       next(err);
     }
@@ -42,16 +42,18 @@ module.exports.getAnyUser = (req, res, next) => User.findById(req.user._id)
   .catch(next);
 
 module.exports.updateUser = (req, res, next) => {
-  const { name } = req.body;
+  const { name, email } = req.body;
   const id = req.user._id;
-  return User.findByIdAndUpdate(id, { name }, { new: true, runValidators: true })
+  return User.findByIdAndUpdate(id, { name, email }, { new: true, runValidators: true })
     .orFail(() => {
       throw new NotFoundError(`Нет такого пользователя ${id}`);
     })
-    .then((user) => res.status(200).send(user))
+    .then((user) => res.send(user))
     .catch((err) => {
       if (err.name === 'ValidationError' || err.name === 'CastError') {
         throw new ValidationError('Вы не правильно заполнили обязательные поля');
+      } else if (err.code === 11000) {
+        throw new ConflictError('Введите другой email');
       } else {
         next(err);
       }

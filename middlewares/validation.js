@@ -11,7 +11,7 @@ module.exports.loginValidation = celebrate({
 
 module.exports.userValidation = celebrate({
   body: Joi.object().keys({
-    name: Joi.string().min(2).max(30),
+    name: Joi.string().min(2).max(30).required(),
     email: Joi.string().required().email(),
     password: Joi.string().required(),
   }),
@@ -20,6 +20,7 @@ module.exports.userValidation = celebrate({
 module.exports.userDataValidation = celebrate({
   body: Joi.object().keys({
     name: Joi.string().min(2).max(30).required(),
+    email: Joi.string().required().email(),
   }),
 });
 
@@ -33,7 +34,7 @@ module.exports.movieValidation = celebrate({
     image: Joi.string().required().pattern(validationLink),
     trailerLink: Joi.string().required().pattern(validationLink),
     thumbnail: Joi.string().required().pattern(validationLink),
-    movieId: Joi.string().required(),
+    movieId: Joi.number().required(),
     nameRU: Joi.string().required(),
     nameEN: Joi.string().required(),
   }),
@@ -41,6 +42,6 @@ module.exports.movieValidation = celebrate({
 
 module.exports.movieIdValidation = celebrate({
   params: Joi.object().keys({
-    _id: Joi.string().required(),
+    _id: Joi.string().hex().length(24),
   }),
 });
