@@ -8,14 +8,16 @@ const NotFoundError = require('./errors/not-found-error');
 const errorHandler = require('./middlewares/errorHadler');
 const router = require('./routes/index');
 const DB_ADDRES = require('./utils/config');
+
 const cors = require('./middlewares/cors');
 
 const app = express();
 const { PORT = 3000, DB_URL, NODE_ENV } = process.env;
 
-app.use(cors);
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
+
+app.use(cors);
 
 app.use(requestLogger);
 
