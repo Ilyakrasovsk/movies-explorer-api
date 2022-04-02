@@ -21,13 +21,11 @@ mongoose.connect(NODE_ENV === 'production' ? DB_URL : DB_ADDRES, {
 
 console.log(cors);
 
-app.use(cors);
-
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
 app.use(requestLogger);
-
+app.use(cors);
 app.use(router);
 
 app.use('*', () => {
