@@ -1,8 +1,9 @@
 const allowedCors = [
   'http://localhost:3000',
-  'https://localhost:3000',
-  'https://diplom.ilkras.nomoredomains.work/',
   'http://diplom.ilkras.nomoredomains.work/',
+  'https://diplom.ilkras.nomoredomains.work/',
+  'http://api.diplom.ilkras.nomoredomains.work/',
+  'https://api.diplom.ilkras.nomoredomains.work/',
 ];
 
 const cors = (req, res, next) => {
