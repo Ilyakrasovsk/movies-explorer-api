@@ -1,8 +1,6 @@
 const jwt = require('jsonwebtoken');
 const AuthError = require('../errors/auth-error');
 
-const { JWT_SECRET, NODE_ENV } = process.env;
-
 module.exports = (req, res, next) => {
   const { authorization } = req.headers;
 
@@ -18,5 +16,6 @@ module.exports = (req, res, next) => {
   } catch (err) {
     throw new AuthError('Неправильная авторизация');
   }
+  req.user = payload;
   next();
 };
