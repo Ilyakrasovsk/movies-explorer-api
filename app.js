@@ -22,8 +22,8 @@ mongoose.connect(NODE_ENV === 'production' ? DB_URL : DB_ADDRES, {
 
 const allowedCors = [
   'http://localhost:3000',
-  'http://api.diplom.ilkras.nomoredomains.work/'
-  'https://api.diplom.ilkras.nomoredomains.work/'
+  'http://api.diplom.ilkras.nomoredomains.work/',
+  'https://api.diplom.ilkras.nomoredomains.work/',
 ];
 app.use((req, res, next) => {
   const { origin } = req.headers; // Сохраняем источник запроса в переменную origin
