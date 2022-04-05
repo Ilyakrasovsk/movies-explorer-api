@@ -92,7 +92,7 @@ module.exports.getAnyUser = (req, res, next) => {
 module.exports.updateUser = (req, res, next) => {
   const { name, email } = req.body;
   const id = req.user._id;
-  return User.findByIdAndUpdate(id, { name, email }, { new: true, runValidators: true })
+  User.findByIdAndUpdate(id, { name, email }, { new: true, runValidators: true })
     .orFail(() => {
       throw new NotFoundError(`Нет такого пользователя ${id}`);
     })
