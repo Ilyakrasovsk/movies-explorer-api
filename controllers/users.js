@@ -29,14 +29,13 @@ module.exports.createUser = (req, res, next) => {
     email, password, name,
   } = req.body;
 
-  // User.findOne({ email })
-  //   .then((user) => {
-  //     if (user) {
-  //       throw new ConflictError('Такой пользователь уже создан');
-  //     }
-  //     return bcrypt.hash(password, 10);
-  //   })
-  bcrypt.hash(password, 10)
+  User.findOne({ email })
+    .then((user) => {
+      if (user) {
+        throw new ConflictError('Такой пользователь уже создан');
+      }
+      return bcrypt.hash(password, 10);
+    })
     .then((hash) => User.create({
       email: email, password: hash, name: name,
     })
