@@ -59,8 +59,6 @@ app.use(errors());
 app.use(errorHandler);
 mongoose.connect(NODE_ENV === 'production' ? DB_URL : 'mongodb://localhost:27017/bitfilmsbd', {
   useNewUrlParser: true,
-  useCreateIndex: true,
-  useFindAndModify: false,
 });
 app.listen(PORT, () => {
   console.log(`Ссылка на сервер: ${PORT}`);
