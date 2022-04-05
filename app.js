@@ -11,7 +11,9 @@ const router = require('./routes/index');
 const { PORT = 3000, DB_URL, NODE_ENV } = process.env;
 
 const app = express();
-
+mongoose.connect(NODE_ENV === 'production' ? DB_URL : 'mongodb://localhost:27017/bitfilmsbd', {
+  useNewUrlParser: true,
+});
 const allowedCors = [
   'http://localhost:3000',
   'http://diplom.ilkras.nomoredomains.work',
@@ -57,9 +59,6 @@ app.use('*', () => {
 app.use(errorLogger);
 app.use(errors());
 app.use(errorHandler);
-mongoose.connect(NODE_ENV === 'production' ? DB_URL : 'mongodb://localhost:27017/bitfilmsbd', {
-  useNewUrlParser: true,
-});
 app.listen(PORT, () => {
   console.log(`Ссылка на сервер: ${PORT}`);
 });
