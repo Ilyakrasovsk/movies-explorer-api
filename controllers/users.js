@@ -6,32 +6,57 @@ const NotFoundError = require('../errors/not-found-error');
 const ConflictError = require('../errors/conflict-error');
 const User = require('../models/user');
 
+// module.exports.createUser = (req, res, next) => {
+//   const { name, email, password } = req.body;
+//   bcrypt.hash(password, 10)
+//     .then((hash) => User.create({
+//       name,
+//       email,
+//       password: hash,
+//     }))
+//     .then((user) => res.status(201).send(user))
+//     .catch((err) => {
+//       if (err.name === 'ValidationError') {
+//         throw new ValidationError('Переданы некорректные данные при создании пользователя');
+//       } else if (err.code === 11000) {
+//         throw new ConflictError(`Пользователь с таким email ${email} уже существует`);
+//       } else {
+//         retutn next(err);
+//       }
+//     })
+//     .catch(next);
+// };
 module.exports.createUser = (req, res, next) => {
-  const { name, email, password } = req.body;
-  bcrypt.hash(password, 10)
-    .then((hash) => User.create({
-      name,
-      email,
-      password: hash,
-    }))
-    .then((user) => res.status(201).send({
-      user: {
-         name: user.name,
-         email: user.email,
-         _id: user._id,
-       },
-    }))
-    .catch((err) => {
-      if (err.name === 'ValidationError') {
-        throw new ValidationError('Переданы некорректные данные при создании пользователя');
-      } else if (err.code === 11000) {
-        throw new ConflictError(`Пользователь с таким email ${email} уже существует`);
-      } else {
-        retutn next(err);
+  const {
+    email, password, name,
+  } = req.body;
+
+  User.findOne({ email })
+    .then((user) => {
+      if (user) {
+        throw new ConflictError('Такой пользователь уже создан');
       }
+      return bcrypt.hash(password, 10);
     })
+    .then((hash) => User.create({
+      email, password: hash, name,
+    })
+      .then((user) => res.status(200).send({
+        user: {
+          email: user.email,
+          name: user.name,
+          _id: user._id,
+        },
+      }))
+      .catch((err) => {
+        if (err.name === 'ValidationError') {
+          throw new ValidationError('Ошибка сервера');
+        }
+        return next(err);
+      }))
     .catch(next);
 };
+
 
 module.exports.getAnyUser = (req, res, next) => { User.findById(req.user._id)
   .orFail(() => {
