@@ -14,14 +14,20 @@ module.exports.createUser = (req, res, next) => {
       email,
       password: hash,
     }))
-    .then((user) => res.status(201).send(user))
+    .then((user) => res.status(201).send({
+      user: {
+         name: user.name,
+         email: user.email,
+         _id: user._id,
+       },
+    }))
     .catch((err) => {
       if (err.name === 'ValidationError') {
         throw new ValidationError('Переданы некорректные данные при создании пользователя');
       } else if (err.code === 11000) {
         throw new ConflictError(`Пользователь с таким email ${email} уже существует`);
       } else {
-        next(err);
+        retutn next(err);
       }
     })
     .catch(next);
