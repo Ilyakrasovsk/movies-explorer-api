@@ -6,37 +6,6 @@ const NotFoundError = require('../errors/not-found-error');
 const ConflictError = require('../errors/conflict-error');
 const User = require('../models/user');
 
-module.exports.createUser = (req, res, next) => {
-  const {
-    email, password, name,
-  } = req.body;
-
-  User.findOne({ email })
-    .then((user) => {
-      if (user) {
-        throw new ConflictError('Такой пользователь уже создан');
-      }
-      return bcrypt.hash(password, 10);
-    })
-    .then((hash) => User.create({
-      email: email, password: hash, name: name,
-    })
-      .then((user) => res.status(200).send({
-        user: {
-          email: user.email,
-          name: user.name,
-          _id: user._id,
-        },
-      }))
-      .catch((err) => {
-        if (err.name === 'ValidationError') {
-          throw new ValidationError('Ошибка сервера');
-        }
-        return next(err);
-      }))
-    .catch(next);
-};
-
 module.exports.getAnyUser = (req, res, next) => {
   User.findById(req.user._id)
     .then((user) => {
@@ -54,6 +23,39 @@ module.exports.getAnyUser = (req, res, next) => {
     })
     .catch(next);
 };
+
+module.exports.createUser = (req, res, next) => {
+  const {
+    email, password, name,
+  } = req.body;
+
+  // User.findOne({ email })
+  //   .then((user) => {
+  //     if (user) {
+  //       throw new ConflictError('Такой пользователь уже создан');
+  //     }
+  //     return bcrypt.hash(password, 10);
+  //   })
+  bcrypt.hash(password, 10)
+    .then((hash) => User.create({
+      email: email, password: hash, name: name,
+    })
+      .then((user) => res.status(200).send({
+        user: {
+          email: user.email,
+          name: user.name,
+          _id: user._id,
+        }
+      }))
+      .catch((err) => {
+        if (err.name === 'ValidationError') {
+          throw new ValidationError('Ошибка сервера');
+        }
+        return next(err);
+      }))
+    .catch(next);
+};
+
 module.exports.updateUser = (req, res, next) => {
   const { name, email } = req.body;
   const id = req.user._id;
