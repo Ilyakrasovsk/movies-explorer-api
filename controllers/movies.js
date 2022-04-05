@@ -66,24 +66,6 @@ module.exports.createMovies = (req, res, next) => {
 //     })
 //     .catch(next);
 // };
-module.exports.deleteMovie = (req, res, next) => {
-  Movie.findById(req.params.movieId).select('+owner')
-    .then((movie) => {
-      if (!movie) {
-        throw new NotFoundError('Фильма с указанным _id не найдена.');
-      } else if (movie.owner.toString() !== req.user._id) {
-        throw new ValidationError('Переданы некорректные данные.');
-      }
-
-      Movie.findByIdAndDelete(req.params.movieId).select('-owner')
-        .then((deletedMovie) => res.status(200).send(deletedMovie))
-        .catch((err) => {
-          if (err.kind === 'ObjectId') {
-            next(new ValidationError('Невалидный id'));
-          }
-          return next(err);
-        });
-    });
 // module.exports.deleteMovie = (req, res, next) => {
 //   const movieId = req.params._id;
 //   return Movie.findById(movieId)
@@ -105,3 +87,22 @@ module.exports.deleteMovie = (req, res, next) => {
 //     })
 //     .catch(next);
 // };
+module.exports.deleteMovie = (req, res, next) => {
+  Movie.findById(req.params.movieId).select('+owner')
+    .then((movie) => {
+      if (!movie) {
+        throw new NotFoundError('Фильма с указанным _id не найдена.');
+      } else if (movie.owner.toString() !== req.user._id) {
+        throw new ValidationError('Переданы некорректные данные.');
+      }
+
+      Movie.findByIdAndDelete(req.params.movieId).select('-owner')
+        .then((deletedMovie) => res.status(200).send(deletedMovie))
+        .catch((err) => {
+          if (err.kind === 'ObjectId') {
+            next(new ValidationError('Невалидный id'));
+          }
+          return next(err);
+        });
+    });
+  };

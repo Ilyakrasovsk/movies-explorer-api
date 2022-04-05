@@ -57,7 +57,6 @@ module.exports.createUser = (req, res, next) => {
     .catch(next);
 };
 
-
 // module.exports.getAnyUser = (req, res, next) => { User.findById(req.user._id)
 //   .orFail(() => {
 //     throw new NotFoundError('Пользователь не найден');
@@ -83,7 +82,7 @@ module.exports.getAnyUser = (req, res, next) => {
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        throw new BadRequestError('Ошибка сервера');
+        throw new ValidationError('Ошибка сервера');
       }
       return next(err);
     })

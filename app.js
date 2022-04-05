@@ -7,14 +7,11 @@ const { requestLogger, errorLogger } = require('./middlewares/logger');
 const NotFoundError = require('./errors/not-found-error');
 const errorHandler = require('./middlewares/errorHadler');
 const router = require('./routes/index');
-//const cors = require('./middlewares/cors');
-//const cors = require('cors');
 
-const DB_ADDRES = require('./utils/config');
 const { PORT = 3000, DB_URL, NODE_ENV } = process.env;
 
 const app = express();
-mongoose.connect(NODE_ENV === 'production' ? DB_URL : DB_ADDRES, {
+mongoose.connect(NODE_ENV === 'production' ? DB_URL : 'mongodb://localhost:27017/bitfilmsbd', {
   useNewUrlParser: true,
   useCreateIndex: true,
   useFindAndModify: false,
@@ -23,7 +20,7 @@ mongoose.connect(NODE_ENV === 'production' ? DB_URL : DB_ADDRES, {
 const allowedCors = [
   'http://localhost:3000',
   'http://diplom.ilkras.nomoredomains.work',
-  //'https://diplom.ilkras.nomoredomains.work',
+  'https://diplom.ilkras.nomoredomains.work',
 ];
 // eslint-disable-next-line consistent-return
 app.use((req, res, next) => {
@@ -65,8 +62,6 @@ app.use('*', () => {
 app.use(errorLogger);
 app.use(errors());
 app.use(errorHandler);
-
-
 app.listen(PORT, () => {
   console.log(`Ссылка на сервер: ${PORT}`);
 });
