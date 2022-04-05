@@ -6,26 +6,6 @@ const NotFoundError = require('../errors/not-found-error');
 const ConflictError = require('../errors/conflict-error');
 const User = require('../models/user');
 
-// module.exports.createUser = (req, res, next) => {
-//   const { name, email, password } = req.body;
-//   bcrypt.hash(password, 10)
-//     .then((hash) => User.create({
-//       name,
-//       email,
-//       password: hash,
-//     }))
-//     .then((user) => res.status(201).send(user))
-//     .catch((err) => {
-//       if (err.name === 'ValidationError') {
-//         throw new ValidationError('Переданы некорректные данные при создании пользователя');
-//       } else if (err.code === 11000) {
-//         throw new ConflictError(`Пользователь с таким email ${email} уже существует`);
-//       } else {
-//         retutn next(err);
-//       }
-//     })
-//     .catch(next);
-// };
 module.exports.createUser = (req, res, next) => {
   const {
     email, password, name,
@@ -57,20 +37,6 @@ module.exports.createUser = (req, res, next) => {
     .catch(next);
 };
 
-// module.exports.getAnyUser = (req, res, next) => { User.findById(req.user._id)
-//   .orFail(() => {
-//     throw new NotFoundError('Пользователь не найден');
-//   })
-//   .then((user) => res.send({ user }))
-//   .catch((err) => {
-//     if (err.name === 'NotFoundError') {
-//       throw new NotFoundError('Пользователь не найден');
-//     } else {
-//       next(err);
-//     }
-//   })
-//   .catch(next);
-// };
 module.exports.getAnyUser = (req, res, next) => {
   User.findById(req.user._id)
     .then((user) => {
