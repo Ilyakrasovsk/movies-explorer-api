@@ -6,7 +6,7 @@ const Movie = require('../models/movie');
 // module.exports.getMovies = (req, res, next) => Movie.find({})
 //   .then((movies) => res.send(movies))
 //   .catch(next);
-odule.exports.getMovies = (req, res, next) => {
+module.exports.getMovies = (req, res, next) => {
   Movie.find({})
     .then((movies) => {
       res.send({ data: movies });
@@ -18,7 +18,7 @@ odule.exports.getMovies = (req, res, next) => {
       return next(err);
     });
 };
-module.exports.createMovie = (req, res, next) => {
+module.exports.createMovies = (req, res, next) => {
   Movie.create({ owner: req.user._id, ...req.body })
     .then((movie) => res.status(200).send(movie))
     .catch((err) => {
