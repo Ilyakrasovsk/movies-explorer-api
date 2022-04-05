@@ -13,7 +13,7 @@ odule.exports.getMovies = (req, res, next) => {
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        return next(new BadRequestError('Вы не правильно заполнили обязательные поля'));
+        return next(new ValidationError('Вы не правильно заполнили обязательные поля'));
       }
       return next(err);
     });
@@ -23,7 +23,7 @@ module.exports.createMovie = (req, res, next) => {
     .then((movie) => res.status(200).send(movie))
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        return next(new BadRequestError('Вы не правильно заполнили обязательные поля'));
+        return next(new ValidationError('Вы не правильно заполнили обязательные поля'));
       }
       return next(err);
     })
@@ -72,14 +72,14 @@ module.exports.deleteMovie = (req, res, next) => {
       if (!movie) {
         throw new NotFoundError('Фильма с указанным _id не найдена.');
       } else if (movie.owner.toString() !== req.user._id) {
-        throw new BadRequestError('Переданы некорректные данные.');
+        throw new ValidationError('Переданы некорректные данные.');
       }
 
       Movie.findByIdAndDelete(req.params.movieId).select('-owner')
         .then((deletedMovie) => res.status(200).send(deletedMovie))
         .catch((err) => {
           if (err.kind === 'ObjectId') {
-            next(new BadRequestError('Невалидный id'));
+            next(new ValidationError('Невалидный id'));
           }
           return next(err);
         });
