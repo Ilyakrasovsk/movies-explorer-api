@@ -38,18 +38,20 @@ module.exports.createUser = (req, res, next) => {
     })
     .then((hash) => User.create({
       email: email, password: hash, name: name,
-    })
+    }))
       .then((user) => res.status(200).send({
+        user: {
           email: user.email,
           name: user.name,
           _id: user._id,
+        }
       }))
       .catch((err) => {
         if (err.name === 'ValidationError') {
           throw new ValidationError('Ошибка сервера');
         }
         return next(err);
-      }))
+      })
     .catch(next);
 };
 
