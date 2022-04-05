@@ -37,8 +37,10 @@ module.exports.createUser = (req, res, next) => {
       return bcrypt.hash(password, 10);
     })
     .then((hash) => User.create({
-      email: email, password: hash, name: name,
-    }))
+      email: email,
+      password: hash,
+      name: name,
+    })
       .then((user) => res.status(200).send({
         user: {
           email: user.email,
@@ -51,7 +53,7 @@ module.exports.createUser = (req, res, next) => {
           throw new ValidationError('Ошибка сервера');
         }
         return next(err);
-      })
+      }))
     .catch(next);
 };
 

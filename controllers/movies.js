@@ -1,6 +1,5 @@
 const ValidationError = require('../errors/validation-error');
 const NotFoundError = require('../errors/not-found-error');
-const Forbidden = require('../errors/forbidden-error');
 const Movie = require('../models/movie');
 
 module.exports.getMovies = (req, res, next) => {
@@ -44,4 +43,4 @@ module.exports.deleteMovie = (req, res, next) => {
           return next(err);
         });
     });
-  };
+};
