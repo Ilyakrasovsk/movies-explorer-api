@@ -23,7 +23,7 @@ mongoose.connect(NODE_ENV === 'production' ? DB_URL : DB_ADDRES, {
 const allowedCors = [
   'http://localhost:3000',
   'http://diplom.ilkras.nomoredomains.work',
-  'https://diplom.ilkras.nomoredomains.work',
+  //'https://diplom.ilkras.nomoredomains.work',
 ];
 // eslint-disable-next-line consistent-return
 app.use((req, res, next) => {
