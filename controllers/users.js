@@ -58,19 +58,36 @@ module.exports.createUser = (req, res, next) => {
 };
 
 
-module.exports.getAnyUser = (req, res, next) => { User.findById(req.user._id)
-  .orFail(() => {
-    throw new NotFoundError('Пользователь не найден');
-  })
-  .then((user) => res.send({ user }))
-  .catch((err) => {
-    if (err.name === 'NotFoundError') {
-      throw new NotFoundError('Пользователь не найден');
-    } else {
-      next(err);
-    }
-  })
-  .catch(next);
+// module.exports.getAnyUser = (req, res, next) => { User.findById(req.user._id)
+//   .orFail(() => {
+//     throw new NotFoundError('Пользователь не найден');
+//   })
+//   .then((user) => res.send({ user }))
+//   .catch((err) => {
+//     if (err.name === 'NotFoundError') {
+//       throw new NotFoundError('Пользователь не найден');
+//     } else {
+//       next(err);
+//     }
+//   })
+//   .catch(next);
+// };
+module.exports.getAnyUser = (req, res, next) => {
+  User.findById(req.user._id)
+    .then((user) => {
+      if (!user) {
+        throw new NotFoundError('Пользователь не найден');
+      } else {
+        res.status(200).send(user);
+      }
+    })
+    .catch((err) => {
+      if (err.name === 'CastError') {
+        throw new BadRequestError('Ошибка сервера');
+      }
+      return next(err);
+    })
+    .catch(next);
 };
 module.exports.updateUser = (req, res, next) => {
   const { name, email } = req.body;
@@ -79,15 +96,14 @@ module.exports.updateUser = (req, res, next) => {
     .orFail(() => {
       throw new NotFoundError(`Нет такого пользователя ${id}`);
     })
-    .then((user) => res.send(user))
+    .then((user) => res.send({ user }))
     .catch((err) => {
       if (err.name === 'ValidationError' || err.name === 'CastError') {
         throw new ValidationError('Вы не правильно заполнили обязательные поля');
       } else if (err.code === 11000) {
         throw new ConflictError('Введите другой email');
-      } else {
-        next(err);
       }
+      return next(err);
     })
     .catch(next);
 };
