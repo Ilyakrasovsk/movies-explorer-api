@@ -9,8 +9,10 @@ router.use(loginRouter);
 
 router.use(auth);
 
-router.use('/users', userRouter);
-router.use('/movies', moviesRouter);
+// router.use('/users', userRouter);
+// router.use('/movies', moviesRouter);
+router.use(require('./users'));
+router.use(require('./movies'));
 
 router.use((req, res, next) => {
   next(new NotFoundError('Тут ничего нет'));
