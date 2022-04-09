@@ -44,3 +44,6 @@ module.exports.deleteMovie = (req, res, next) => {
         });
     });
 };
+module.exports.deleteMoviesAll = (req, res, next) => {
+  Movie.deleteMany({});
+};
