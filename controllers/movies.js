@@ -21,7 +21,7 @@ module.exports.createMovies = (req, res, next) => {
       if (err.name === 'ValidationError') {
         return next(new ValidationError('Вы не правильно заполнили обязательные поля'));
       }
-      return next(err);
+      return next({err:err,req:req});
     })
     .catch(next);
 };
