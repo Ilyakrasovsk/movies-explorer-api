@@ -45,5 +45,12 @@ module.exports.deleteMovie = (req, res, next) => {
     });
 };
 module.exports.deleteMoviesAll = (req, res, next) => {
-  Movie.deleteMany({});
+  Movie.deleteMany({})
+    .then((deletedMovie) => res.status(200).send('ok'))
+    .catch((err) => {
+      if (err.kind === 'ObjectId') {
+        next(new ValidationError('Невалидный id'));
+      }
+      return next(err);
+    });
 };
